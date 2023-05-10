@@ -1,26 +1,30 @@
-import React, { PropsWithChildren, Ref } from "react";
+import { PropsWithChildren, Ref } from "react";
 import { useEffect, useRef } from "react";
 import { Editor, Range } from "slate";
 import { useFocused, useSlate } from "slate-react";
-import { BaseProps, Menu } from "./EditorComponents";
 import { css, cx } from "@emotion/css";
 import ReactDOM from "react-dom";
 import { FormatButton } from "./TextFormatToggle";
 import ColorPicker from "./ColorPicker";
-import { isFormatActive, toggleFormatting } from "../MyEditor";
+import { getFormatValue, isFormatActive, toggleFormatting } from "../MyEditor";
+import React from "react";
+
+export interface BaseProps {
+  className: string
+  [key: string]: unknown
+}
 
 export default function HoveringToolbar() {
   const ref = useRef<HTMLDivElement | undefined>();
-  const editor = useSlate()
-  const inFocus = useFocused()
+  const editor = useSlate();
+  const inFocus = useFocused();
 
   useEffect(() => {
-    const el = ref.current
-    const { selection } = editor
-
+    const el = ref.current;
     if (!el) {
       return
     }
+    const { selection } = editor;
 
     if (
       !selection ||
@@ -43,7 +47,7 @@ export default function HoveringToolbar() {
       window.pageXOffset -
       el.offsetWidth / 2 +
       rect.width / 2}px`
-  })
+  });
 
   return (
     <Portal>
@@ -63,13 +67,43 @@ export default function HoveringToolbar() {
         `}
         onMouseDown={(e: MouseEvent) => {
           // prevent toolbar from taking focus away from editor
-          e.preventDefault()
+          e.preventDefault();
+          e.stopPropagation();
         }}
       >
         <FormatButton format="bold" label="Bold" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
         <FormatButton format="italic" label="italic" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
         <FormatButton format="underlined" label="underlined" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
-        <ColorPicker toggleFormat={toggleFormatting} />
+        <ColorPicker 
+          getColorValue={() => { // used for styling 'color' in CSS
+            let formatArray = getFormatValue(editor, 'color');
+            let colorValue = "#000000";
+            if (Array.isArray(formatArray) && formatArray.length && formatArray[0]?.color) {
+              colorValue = formatArray[0]?.color;
+            }
+            return colorValue;
+          }}
+          onInput={(e) => {
+            const selectedColor = (e.target as HTMLInputElement).value;
+            if (!selectedColor) return;
+            toggleFormatting(editor, 'color', selectedColor);
+          }}
+        />
+        <ColorPicker 
+          getColorValue={() => { // used for styling 'backgroundColor' in CSS
+            let formatArray = getFormatValue(editor, 'backgroundColor');
+            let colorValue = "#FFFFFF";
+            if (Array.isArray(formatArray) && formatArray.length && formatArray[0]?.backgroundColor) {
+              colorValue = formatArray[0]?.backgroundColor;
+            }
+            return colorValue;
+          }}
+          onInput={(e) => {
+            const selectedColor = (e.target as HTMLInputElement).value;
+            if (!selectedColor) return;
+            toggleFormatting(editor, 'backgroundColor', selectedColor);
+          }}
+        />
       </Menu>
     </Portal>
   )
@@ -78,25 +112,27 @@ export default function HoveringToolbar() {
 export const Portal = ({ children }: PropsWithChildren) => {
   return typeof document === 'object'
     ? ReactDOM.createPortal(children, document.body)
-    : null
+    : null;
 }
 
-export const Toolbar = React.forwardRef(
+export const Menu = React.forwardRef(
   (
     { className, ...props }: PropsWithChildren<BaseProps>,
     ref: Ref<HTMLDivElement> | undefined
   ) => (
-    <Menu
+    <div
       {...props}
       ref={ref}
       className={cx(
         className,
         css`
-          position: relative;
-          padding: 1px 18px 17px;
-          margin: 0 -20px;
-          border-bottom: 2px solid #eee;
-          margin-bottom: 20px;
+          & > * {
+            display: inline-block;
+          }
+
+          & > * + * {
+            margin-left: 15px;
+          }
         `
       )}
     />

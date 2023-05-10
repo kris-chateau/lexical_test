@@ -1,6 +1,6 @@
 import viteLogo from '/vite.svg';
 import './App.css';
-import MyEditor from './components/MyEditor';
+import MyEditor from './Editor/MyEditor';
 
 function App() {
 

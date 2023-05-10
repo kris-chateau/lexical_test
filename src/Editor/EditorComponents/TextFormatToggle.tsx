@@ -12,7 +12,7 @@ type FormatButtonProps = {
   toggleFormat: typeof toggleFormatting;
 };
 export const FormatButton = ({ format, label, isFormatActive, toggleFormat }: FormatButtonProps) => {
-  const editor = useSlate()
+  const editor = useSlate();
   return (
     <Button
       active={isFormatActive(editor, format)}
@@ -44,20 +44,22 @@ export const Button = React.forwardRef(
     >,
     ref: Ref<HTMLSpanElement> | undefined
   ) => {
-    return <span
-      {...props}
-      ref={ref as Ref<HTMLSpanElement>}
-      className={cx(
-        className,
-        css`
+    return (
+      <span
+        {...props}
+        ref={ref as Ref<HTMLSpanElement>}
+        className={cx(
+          className,
+          css`
           cursor: pointer;
           color: ${active
-            ? '#303030'
-            : '#FFF'
-          };
+              ? '#303030'
+              : '#FFF'
+            };
         `
-      )}
-    />
+        )}
+      />
+    )
   }
 )
 
