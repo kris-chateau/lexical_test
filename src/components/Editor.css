@@ -1,0 +1,21 @@
+/*.editor-root {
+  background-color: burlywood;
+}
+
+.editor-background {
+  background-color: coral;
+}
+
+.editor-paragraph {
+  background-color: crimson;
+  min-height: 4em;
+}
+
+.editor-placeholder {
+  color: #999;
+  overflow: hidden;
+  position: relative;
+
+  user-select: none;
+  pointer-events: none;
+}*/
