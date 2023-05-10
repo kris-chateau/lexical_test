@@ -24,7 +24,7 @@ export default function MyEditor() {
         onKeyDown={e => console.log(e.key)}
         placeholder='Enter some text svp'
         style={{
-          backgroundColor: '#eee', borderRadius: 7, minHeight: '3em',
+          backgroundColor: '#efefef', borderRadius: 7, minHeight: '3em',
           wordWrap: 'break-word', width: 300, wordBreak: 'break-all'
         }}
       />
@@ -50,7 +50,7 @@ export const toggleFormatting = (editor: ReturnType<typeof useSlate>, format: st
   }
 }
 
-export function getFormatValue(editor: ReturnType<typeof useSlate>, format: string) {
+export function getFormatValue(editor: ReturnType<typeof useSlate>, format: string): Array<any> | undefined {
   const [match] = Editor.nodes(editor, {
     //@ts-ignore
     match: n => (n[format] !== null) && (n[format] !== undefined),

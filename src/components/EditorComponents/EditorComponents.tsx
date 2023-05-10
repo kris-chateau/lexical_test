@@ -39,7 +39,6 @@ export const EditorValue = React.forwardRef(
             font-size: 14px;
             padding: 5px 20px;
             color: #404040;
-            border-top: 2px solid #eeeeee;
             background: #f8f8f8;
           `}
         >

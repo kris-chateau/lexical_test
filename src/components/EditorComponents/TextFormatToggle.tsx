@@ -5,8 +5,8 @@ import { BaseProps } from "./EditorComponents";
 import { useSlate } from "slate-react";
 import { toggleFormatting } from "../MyEditor";
 
-type FormatButtonProps = { 
-  format: string; 
+type FormatButtonProps = {
+  format: string;
   label: string;
   isFormatActive: (editor: any, format: string) => boolean;
   toggleFormat: typeof toggleFormatting;
@@ -15,11 +15,18 @@ export const FormatButton = ({ format, label, isFormatActive, toggleFormat }: Fo
   const editor = useSlate()
   return (
     <Button
-      reversed
       active={isFormatActive(editor, format)}
       onClick={() => toggleFormat(editor, format)}
     >
-      <Icon>{label}</Icon>
+      <span className={css`
+        font-size: 18px;
+        vertical-align: text-bottom;
+        background-color: #c4c4c4;
+        padding: 4px;
+        border-radius: 5px;
+      `}>
+        {label}
+      </span>
     </Button>
   )
 }
@@ -29,12 +36,10 @@ export const Button = React.forwardRef(
     {
       className,
       active,
-      reversed,
       ...props
     }: PropsWithChildren<
       {
         active: boolean
-        reversed: boolean
       } & BaseProps
     >,
     ref: Ref<HTMLSpanElement> | undefined
@@ -46,13 +51,10 @@ export const Button = React.forwardRef(
         className,
         css`
           cursor: pointer;
-          color: ${reversed
-            ? active
-              ? 'white'
-              : '#aaa'
-            : active
-              ? 'black'
-              : '#ccc'};
+          color: ${active
+            ? '#303030'
+            : '#FFF'
+          };
         `
       )}
     />
@@ -71,9 +73,7 @@ export const Icon = React.forwardRef(
         'material-icons',
         className,
         css`
-          font-size: 18px;
-          vertical-align: text-bottom;
-          background-color: red;
+          
         `
       )}
     />

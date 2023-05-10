@@ -57,7 +57,7 @@ export default function HoveringToolbar() {
           left: -10000px;
           margin-top: -6px;
           opacity: 0;
-          background-color: #a5a5a5;
+          background-color: #DEDEDE;
           border-radius: 4px;
           transition: opacity 0.75s;
         `}
@@ -66,10 +66,10 @@ export default function HoveringToolbar() {
           e.preventDefault()
         }}
       >
-        <FormatButton format="bold" label="format_bold" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
-        <FormatButton format="italic" label="format_italic" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
-        <FormatButton format="underlined" label="format_underlined" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
-        <ColorPicker selectedColor="" toggleFormat={toggleFormatting} />
+        <FormatButton format="bold" label="Bold" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
+        <FormatButton format="italic" label="italic" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
+        <FormatButton format="underlined" label="underlined" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
+        <ColorPicker toggleFormat={toggleFormatting} />
       </Menu>
     </Portal>
   )
