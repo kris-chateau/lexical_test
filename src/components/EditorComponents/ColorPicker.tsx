@@ -1,21 +1,30 @@
-import { useRef } from "react";
+import React from "react";
 import { useSlate } from "slate-react";
+import { getFormatValue, toggleFormatting } from "../MyEditor";
 
 type ColorPickerProps = {
-  active: boolean;
-  onChoice: (color: string) => void;
-  toggleFormat: (editor: any, format: string) => void;
-}
+  toggleFormat: typeof toggleFormatting;
+  selectedColor?: string;
+} & React.InputHTMLAttributes<HTMLInputElement>
 
-export default function ColorPicker({ active, onChoice }: ColorPickerProps) {
-  const editor = useSlate()
-  const inputRef = useRef<HTMLInputElement>(null);
+export default function ColorPicker(props: ColorPickerProps) {
+  const editor = useSlate();
 
-  active && onChoice;
+  function onInput(e: React.FormEvent<HTMLInputElement>) {
+    const selectedColor = (e.target as HTMLInputElement).value;
+
+    if (!selectedColor) return;
+
+    console.log('selected color: ', selectedColor);
+    props.toggleFormat(editor, 'color', selectedColor);
+    console.log(getFormatValue(editor, 'color'));
+  }
 
   return (
-    <>
-      <input type="color" onInput={(val) => console.log(val)} ref={inputRef} />
-    </>
+    <input
+      {...props}
+      type="color"
+      onInput={onInput}
+    />
   )
 }
