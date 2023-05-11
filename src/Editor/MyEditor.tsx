@@ -1,11 +1,12 @@
 // Import React dependencies.
-import { ReactNode, useState } from 'react';
+import { ReactNode, Ref, forwardRef, useImperativeHandle, useState } from 'react';
 // Import the Slate editor factory.
-import { BaseEditor, Editor, Transforms, createEditor, Text } from 'slate';
+import { BaseEditor, Editor, Transforms, createEditor, Text, Descendant, Node } from 'slate';
 // Import the Slate components and React plugin.
 import { Slate, Editable, withReact, ReactEditor, useSlate } from 'slate-react';
 import HoveringToolbar from './EditorComponents/HoveringToolbar';
 import { css } from '@emotion/css';
+import { getPlainText } from 'slate-react/dist/utils/dom';
 
 const initialValue: CustomElement[] = [
   {
@@ -14,11 +15,36 @@ const initialValue: CustomElement[] = [
   },
 ];
 
-export default function MyEditor() {
+let serialized = '';
+
+function MyEditor(props: EditorProps, _ref: Ref<EditorRef>) {
   const [editor] = useState(() => withReact(createEditor()));
 
+  useImperativeHandle(props.innerRef, (): EditorRef => ({
+    serialize() {
+      return serialized;
+    },
+    getPlainText() {
+
+      return '';
+    }
+  }));
+
   return (
-    <Slate editor={editor} value={initialValue} >
+    <Slate editor={editor}
+      onChange={(value: Descendant[]) => {
+        const isAstChange = editor.operations.some(
+          op => 'set_selection' !== op.type
+        );
+        if (isAstChange) {
+          //serialized = JSON.stringify(value);
+          serialized = JSON.stringify(value[0])
+          console.log(value[0])
+          //if (value[0]?.children) {  }
+        }
+      }}
+      value={initialValue}
+    >
       <HoveringToolbar />
       <Editable
         renderLeaf={props => <Leaf {...props} />}
@@ -39,8 +65,17 @@ export default function MyEditor() {
   )
 }
 
+type EditorProps = {
+  innerRef: Ref<any>
+}
+export type EditorRef = {
+  serialize: () => string;
+  getPlainText: () => string;
+}
+export default forwardRef<EditorRef, EditorProps>(MyEditor);
+
 // acts like a dispatcher in redux
-export const toggleFormatting = (editor: ReturnType<typeof useSlate>, format: string, value?: any) => {
+export const toggleFormatting = (editor: ReturnType<typeof useSlate>, format: keyof CustomText, value?: any) => {
   const isActive = isFormatActive(editor, format);
 
   if (['bold', 'italic', 'underlined'].includes(format)) {
@@ -60,17 +95,15 @@ export const toggleFormatting = (editor: ReturnType<typeof useSlate>, format: st
 
 export function getFormatValue(editor: ReturnType<typeof useSlate>, format: string): Array<any> | undefined {
   const [match] = Editor.nodes(editor, {
-    //@ts-ignore
-    match: n => (n[format] !== null) && (n[format] !== undefined),
+    match: (n: any) => (n[format] !== null) && (n[format] !== undefined),
     mode: 'all',
   })
   return match;
 }
 
-export function isFormatActive(editor: ReturnType<typeof useSlate>, format: string) {
+export function isFormatActive(editor: ReturnType<typeof useSlate>, format: keyof CustomText) {
   const [match] = Editor.nodes<CustomElement>(editor, {
-    //@ts-ignore
-    match: (n) => (n[format] !== null) && (n[format] !== undefined),
+    match: (n: any) => (n[format] !== null) && (n[format] !== undefined),
     mode: 'all',
   })
   return !!match

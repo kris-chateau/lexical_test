@@ -74,7 +74,7 @@ export default function HoveringToolbar() {
         <FormatButton format="bold" label="Bold" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
         <FormatButton format="italic" label="italic" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
         <FormatButton format="underlined" label="underlined" isFormatActive={isFormatActive} toggleFormat={toggleFormatting} />
-        <ColorPicker 
+        <ColorPicker
           getColorValue={() => { // used for styling 'color' in CSS
             let formatArray = getFormatValue(editor, 'color');
             let colorValue = "#000000";
@@ -83,13 +83,10 @@ export default function HoveringToolbar() {
             }
             return colorValue;
           }}
-          onInput={(e) => {
-            const selectedColor = (e.target as HTMLInputElement).value;
-            if (!selectedColor) return;
-            toggleFormatting(editor, 'color', selectedColor);
-          }}
+          defaultColor={'#000000'}
+          onColor={(color) => toggleFormatting(editor, 'color', color)}
         />
-        <ColorPicker 
+        <ColorPicker
           getColorValue={() => { // used for styling 'backgroundColor' in CSS
             let formatArray = getFormatValue(editor, 'backgroundColor');
             let colorValue = "#FFFFFF";
@@ -98,11 +95,8 @@ export default function HoveringToolbar() {
             }
             return colorValue;
           }}
-          onInput={(e) => {
-            const selectedColor = (e.target as HTMLInputElement).value;
-            if (!selectedColor) return;
-            toggleFormatting(editor, 'backgroundColor', selectedColor);
-          }}
+          defaultColor={'#FFFFFF'}
+          onColor={(color) => toggleFormatting(editor, 'backgroundColor', color)}
         />
       </Menu>
     </Portal>
@@ -126,10 +120,8 @@ export const Menu = React.forwardRef(
       className={cx(
         className,
         css`
-          & > * {
-            display: inline-block;
-          }
-
+          display: flex;
+          align-items: end;
           & > * + * {
             margin-left: 15px;
           }
