@@ -1,12 +1,12 @@
 // Import React dependencies.
 import { ReactNode, Ref, forwardRef, useImperativeHandle, useState } from 'react';
 // Import the Slate editor factory.
-import { BaseEditor, Editor, Transforms, createEditor, Text, Descendant, Node } from 'slate';
+import { BaseEditor, Editor, Transforms, createEditor, Text, Descendant } from 'slate';
 // Import the Slate components and React plugin.
 import { Slate, Editable, withReact, ReactEditor, useSlate } from 'slate-react';
 import HoveringToolbar from './EditorComponents/HoveringToolbar';
 import { css } from '@emotion/css';
-import { getPlainText } from 'slate-react/dist/utils/dom';
+//import { getPlainText } from 'slate-react/dist/utils/dom';
 
 const initialValue: CustomElement[] = [
   {

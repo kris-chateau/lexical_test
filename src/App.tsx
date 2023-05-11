@@ -14,6 +14,7 @@ function App() {
       return;
     }
     setSerialized(editorRef.current?.serialize() || '');
+    setPlainText('');
   }
 
   return (
