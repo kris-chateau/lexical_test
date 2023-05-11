@@ -1,46 +1,46 @@
 // Import React dependencies.
 import { ReactNode, Ref, forwardRef, useImperativeHandle, useState } from 'react';
 // Import the Slate editor factory.
-import { BaseEditor, Editor, Transforms, createEditor, Text, Descendant } from 'slate';
+import { BaseEditor, Editor, Transforms, createEditor, Text, Node } from 'slate';
 // Import the Slate components and React plugin.
 import { Slate, Editable, withReact, ReactEditor, useSlate } from 'slate-react';
 import HoveringToolbar from './EditorComponents/HoveringToolbar';
 import { css } from '@emotion/css';
-//import { getPlainText } from 'slate-react/dist/utils/dom';
 
-const initialValue: CustomElement[] = [
+const initialValue: ParagraphElement[] = [
   {
     type: 'paragraph',
     children: [{ text: 'A line of text in a paragraph.' }],
   },
 ];
 
-let serialized = '';
-
 function MyEditor(props: EditorProps, _ref: Ref<EditorRef>) {
   const [editor] = useState(() => withReact(createEditor()));
+  const [editorState, setEditorState] = useState<Array<ParagraphElement>>([]);
 
   useImperativeHandle(props.innerRef, (): EditorRef => ({
     serialize() {
-      return serialized;
+      if (!editorState.length) {
+        throw new Error('Could not serialize. No nodes found.');
+      }
+      return JSON.stringify(editorState[0]?.children);
     },
     getPlainText() {
-
-      return '';
+      if (!editorState.length) {
+        throw new Error('Could not serialize. No nodes found.');
+      }
+      return Node.string(editorState[0]);
     }
   }));
 
   return (
     <Slate editor={editor}
-      onChange={(value: Descendant[]) => {
+      onChange={(value: ParagraphElement[]) => {
         const isAstChange = editor.operations.some(
           op => 'set_selection' !== op.type
         );
         if (isAstChange) {
-          //serialized = JSON.stringify(value);
-          serialized = JSON.stringify(value[0])
-          console.log(value[0])
-          //if (value[0]?.children) {  }
+          setEditorState(value);
         }
       }}
       value={initialValue}
@@ -102,7 +102,7 @@ export function getFormatValue(editor: ReturnType<typeof useSlate>, format: stri
 }
 
 export function isFormatActive(editor: ReturnType<typeof useSlate>, format: keyof CustomText) {
-  const [match] = Editor.nodes<CustomElement>(editor, {
+  const [match] = Editor.nodes<ParagraphElement>(editor, {
     match: (n: any) => (n[format] !== null) && (n[format] !== undefined),
     mode: 'all',
   })
@@ -135,7 +135,7 @@ const Leaf = ({ attributes, children, leaf }: { attributes: Record<any, any>, ch
 
 
 // TS DECLARATIONS
-export type CustomElement = { type: 'paragraph'; children: CustomText[] };
+export type ParagraphElement = { type: 'paragraph'; children: CustomText[] };
 // TODO extend CustomText for all css stylings in HoveringToolbar
 export type CustomText = {
   text: string, bold?: boolean,
@@ -146,7 +146,7 @@ export type CustomText = {
 declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor
-    Element: CustomElement
+    Element: ParagraphElement
     Text: CustomText
   }
 }

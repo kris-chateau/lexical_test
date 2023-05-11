@@ -14,7 +14,12 @@ function App() {
       return;
     }
     setSerialized(editorRef.current?.serialize() || '');
-    setPlainText('');
+  }
+
+  function onPlainText() {
+    if (editorRef.current) {
+      setPlainText(editorRef.current.getPlainText());
+    }
   }
 
   return (
@@ -29,7 +34,7 @@ function App() {
         {'Serialize now!'}
       </button>
       {serialized && <p>{serialized}</p>}
-      <button style={{ marginTop: 20 }}>{'Get plain text!'}</button>
+      <button onClick={onPlainText} style={{ marginTop: 20 }}>{'Get plain text!'}</button>
       {plainText && <p>{plainText}</p>}
     </main>
   )
