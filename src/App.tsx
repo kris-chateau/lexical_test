@@ -13,12 +13,24 @@ function App() {
       console.error('Could not serialize (ref is null).');
       return;
     }
-    setSerialized(editorRef.current?.serialize() || '');
+    const serializedResult = editorRef.current?.serialize();
+    if (serializedResult === null) {
+      alert('No changes detected.');
+    } else {
+      setSerialized(serializedResult);
+    }
   }
 
   function onPlainText() {
-    if (editorRef.current) {
-      setPlainText(editorRef.current.getPlainText());
+    if (!editorRef.current) {
+      console.error('Could not serialize (ref is null).');
+      return;
+    }
+    const serializedText = editorRef.current.getPlainText();
+    if (serializedText === null) {
+      alert('No changes detected.');
+    } else {
+      setPlainText(serializedText);
     }
   }
 

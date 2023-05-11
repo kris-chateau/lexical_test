@@ -21,13 +21,15 @@ function MyEditor(props: EditorProps, _ref: Ref<EditorRef>) {
   useImperativeHandle(props.innerRef, (): EditorRef => ({
     serialize() {
       if (!editorState.length) {
-        throw new Error('Could not serialize. No nodes found.');
+        console.error(new Error('Could not serialize. No nodes found.'));
+        return null;
       }
       return JSON.stringify(editorState[0]?.children);
     },
     getPlainText() {
       if (!editorState.length) {
-        throw new Error('Could not serialize. No nodes found.');
+        console.error(new Error('Could not serialize. No nodes found.'));
+        return null;
       }
       return Node.string(editorState[0]);
     }
